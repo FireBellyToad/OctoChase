@@ -9,7 +9,7 @@ const player = {
     init: function(){
         //Start at first available cell
         const playerStartPos = gameMap.freeCells[0];
-        this.x = playerStartPos["x"];
-        this.y = playerStartPos["y"];
+        this.x = playerStartPos.x;
+        this.y = playerStartPos.y;
     }
 }

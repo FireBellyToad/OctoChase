@@ -10,6 +10,7 @@ const Game = {
 
         gameMap.generateMap();
         player.init();        
+        crab.init();        
         this.render();
     },
     
@@ -21,5 +22,6 @@ const Game = {
             }
         }
         this.display.draw(player.x, player.y, player.icon);
+        this.display.draw(crab.x, crab.y, crab.icon);
     }
 }

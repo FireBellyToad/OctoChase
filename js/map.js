@@ -29,7 +29,8 @@ const gameMap = {
 
             //Draw rock emoji
             //shifts all tiles +1 in bot coords because we need to keep the border
-            this.map[x+1][y + 1]= value === 1 ? "🌑" : ".";
+            this.map[x + 1][y + 1] = value === 1 ? "🌑" : ".";
         });
+
     },
 }
