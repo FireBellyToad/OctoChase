@@ -33,4 +33,8 @@ const gameMap = {
         });
 
     },
+
+    isPassable: function(x,y){
+        return this.map[x][y] !== "🌑"
+    }
 }
