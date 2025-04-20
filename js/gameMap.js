@@ -1,14 +1,15 @@
-const gameMap = {
+class GameMap {
 
-    map: [],
-    freeCells: [],
-    generateMap: function () {
+    #map = [];
+    #freeCells = [];
+
+    generateMap() {
 
         // create the walls around the map
         for (let x = 0; x < displayOptions.width; x++) {
-            this.map[x] = [];
+            this.#map[x] = [];
             for (let y = 0; y < displayOptions.height; y++) {
-                this.map[x][y] = "🌑";
+                this.#map[x][y] = "🌑";
             }
         }
 
@@ -24,17 +25,25 @@ const gameMap = {
 
             //record all free cells
             if (value !== 1) {
-                this.freeCells.push({ x: x + 1, y: y + 1 })
+                this.#freeCells.push({ x: x + 1, y: y + 1 })
             }
 
             //Draw rock emoji
             //shifts all tiles +1 in bot coords because we need to keep the border
-            this.map[x + 1][y + 1] = value === 1 ? "🌑" : ".";
+            this.#map[x + 1][y + 1] = value === 1 ? "🌑" : ".";
         });
 
-    },
+    }
 
-    isPassable: function(x,y){
-        return this.map[x][y] !== "🌑"
+    isPassable(x, y) {
+        return this.#map[x][y] !== "🌑"
+    }
+
+    get map() {
+        return this.#map;
+    }
+
+    get freeCells() {
+        return this.#freeCells;
     }
 }

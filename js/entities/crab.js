@@ -1,13 +1,23 @@
-const crab = {
-    x:null,
-    y:null,
+class Crab extends Entity {
+    #gameMapRef;
 
-    icon: "🦀",
-    
-    init: function(){
+    constructor(gameMap){
+        super("🦀");
+        this.#gameMapRef = gameMap;
+    }
+
+    init () {  
+
+        if(!this.#gameMapRef){
+            throw new Error("gameMapRef is not initialized!")
+        } 
+        
         //Start at first available cell
-        const crabStartPos = gameMap.freeCells.pop();
+        const crabStartPos = this.#gameMapRef.freeCells.pop();
         this.x = crabStartPos.x;
         this.y = crabStartPos.y;
+    }
+
+    async act () {
     }
 }

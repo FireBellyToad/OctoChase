@@ -1,6 +1,9 @@
 //Game main object
 const Game = {
     display: null,
+    gameMap: null,
+    player: null,
+    crab: null,
 
     // Init main fuction
     init: function () {
@@ -8,19 +11,31 @@ const Game = {
         this.display = new ROT.Display(displayOptions);
         document.body.appendChild(this.display.getContainer());
 
-        gameMap.generateMap();
-        player.init();
-        crab.init();
+        this.gameMap = new GameMap();
+        this.player = new Player(this.gameMap);
+        this.crab = new Crab(this.gameMap);
+
+        this.gameMap.generateMap();
+        this.player.init(this.gameMap);
+        this.crab.init(this.gameMap);
         this.engine(); // start the game engine
         this.render();
     },
 
     //Game loop
     engine: async function () {
+
         // this is responsible of watching the player move and updating
         // the display accordingly. It is all we need as engine
         while (true) {
-          await player.act(); 
+          await this.player.act(); 
+
+            //Await a valid movement
+            // if crab is reached, create new map
+            if (this.crab.x === this.player.x && this.crab.y === this.player.y) {
+                this.endGame();
+            }
+
           this.render();
         }
       },
@@ -29,20 +44,19 @@ const Game = {
     render: function () {
         for (let x = 0; x < displayOptions.width; x++) {
             for (let y = 0; y < displayOptions.height; y++) {
-                this.display.draw(x, y, gameMap.map[x][y]);
+                this.display.draw(x, y, this.gameMap.map[x][y]);
             }
         }
-        this.display.draw(player.x, player.y, player.icon);
-        this.display.draw(crab.x, crab.y, crab.icon);
+        this.display.draw(this.player.x, this.player.y, this.player.icon);
+        this.display.draw(this.crab.x, this.crab.y, this.crab.icon);
     },
 
     // when the game is over, we clear hte screen and show a fancy message
-    endGame: function () {
-        this.win = true;
+    endGame: async function () {
         this.display.clear();
         this.display.draw(8, 8, "You ate the crab!", "blue");
-        // gameMap.generateMap();
-        player.init();
-        // crab.init();
+        this.gameMap.generateMap();
+        this.player.init();
+        this.crab.init();
     }
 }
