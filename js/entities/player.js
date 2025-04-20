@@ -28,10 +28,13 @@ class Player extends Entity {
 
     async act() {
 
-        // This halts the whole game until player input
+        // This halts the whole game player did something input
         let action = false;
         while (!action) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            
+            //Slow down the game a little
+            await new Promise((resolve) => setTimeout(resolve, 50));
+
             let e = await new Promise((resolve) => {
                 window.addEventListener("keydown", resolve, { once: true });
             });

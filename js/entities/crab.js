@@ -28,8 +28,11 @@ class Crab extends Entity {
                 y: Math.ceil(ROT.RNG.getUniform() * 3) - 2,
             }
 
+            //Keep within map boundaries
             newX = ROT.Util.clamp(this.x + diff.x,1,displayOptions.width -1);
             newY = ROT.Util.clamp(this.y + diff.y,1,displayOptions.height -1);
+
+            //Retry until destination is on passable tile
         }while(!this.#gameMapRef.isPassable(newX, newY))
             
         //move

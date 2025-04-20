@@ -27,24 +27,24 @@ const Game = {
     engine: async function () {
 
         //Add to scheduler all the entities
-        this.scheduler.add(this.player,true);
-        this.scheduler.add(this.crab,true);
+        this.scheduler.add(this.player, true);
+        this.scheduler.add(this.crab, true);
 
         // this is responsible of watching the player move and updating
         // the display accordingly. It is all we need as engine
         while (true) {
-            
-          await this.scheduler.next().act(); 
 
-            //Await a valid movement
+            //Await until the scheduled actor acted
+            await this.scheduler.next().act();
+
             // if crab is reached, create new map
             if (this.crab.x === this.player.x && this.crab.y === this.player.y) {
-                this.endGame();
+                await this.endGame();
             }
 
-          this.render();
+            this.render();
         }
-      },
+    },
 
     // Draw map
     render: function () {
@@ -60,9 +60,10 @@ const Game = {
     // when the game is over, we clear hte screen and show a fancy message
     endGame: async function () {
         this.display.clear();
-        this.display.draw(8, 8, "You ate the crab!", "blue");
+        this.display.draw(8, 8, "🏆 You ate the crab! 🏆", "blue")
         this.gameMap.generateMap();
         this.player.init();
         this.crab.init();
+        await new Promise((resolve) => setTimeout(resolve, 3000));
     }
 }
