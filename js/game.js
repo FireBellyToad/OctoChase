@@ -4,6 +4,8 @@ const Game = {
     gameMap: null,
     player: null,
     crab: null,
+    shark: null,
+    actors: [],
     scheduler: new ROT.Scheduler.Simple(),
 
     // Init main fuction
@@ -15,10 +17,17 @@ const Game = {
         this.gameMap = new GameMap();
         this.player = new Player(this.gameMap);
         this.crab = new Crab(this.gameMap);
+        this.shark = new Shark(this.gameMap, this.player);
+
+        //Register actors
+        this.actors.push(this.player);
+        this.actors.push(this.crab);
+        this.actors.push(this.shark);
 
         this.gameMap.generateMap();
         this.player.init(this.gameMap);
         this.crab.init(this.gameMap);
+        this.shark.init(this.gameMap);
         this.engine(); // start the game engine
         this.render();
     },
@@ -27,19 +36,22 @@ const Game = {
     engine: async function () {
 
         //Add to scheduler all the entities
-        this.scheduler.add(this.player, true);
-        this.scheduler.add(this.crab, true);
+        this.actors.forEach(a => this.scheduler.add(a, true));
 
         // this is responsible of watching the player move and updating
         // the display accordingly. It is all we need as engine
         while (true) {
 
-            //Await until the scheduled actor acted
-            await this.scheduler.next().act();
+            //Await until all the scheduled actors acted
+            for (const a of this.actors) {
+                await this.scheduler.next().act();
+            }
 
             // if crab is reached, create new map
             if (this.crab.x === this.player.x && this.crab.y === this.player.y) {
-                await this.endGame();
+                await this.endGame("🏆 You ate the crab! 🏆", "blue");
+            } else if (this.shark.hasKilledPlayer) {
+                await this.endGame("☠️ The shark ate you! ☠️", "red");
             }
 
             this.render();
@@ -55,15 +67,21 @@ const Game = {
         }
         this.display.draw(this.player.x, this.player.y, this.player.icon);
         this.display.draw(this.crab.x, this.crab.y, this.crab.icon);
+        this.display.draw(this.shark.x, this.shark.y, this.shark.icon);
     },
 
-    // when the game is over, we clear hte screen and show a fancy message
-    endGame: async function () {
+    // when the game is over, we clear hte screen and show a fancy message for three seconds,
+    // then starts a new game
+    endGame: async function (message, color) {
+
         this.display.clear();
-        this.display.draw(8, 8, "🏆 You ate the crab! 🏆", "blue")
+        this.display.draw(14, 10, message, color);
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        
         this.gameMap.generateMap();
         this.player.init();
         this.crab.init();
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        this.shark.init();
     }
 }

@@ -1,6 +1,6 @@
 const displayOptions = {
     // Configure the display
-    bg: "white", // background
+    bg: "#76b5c5", // background
     fg: "dimGrey", // foreground
     fontFamily: "Fira Mono", // font (use a monospace for good spacing between emojis)
     width: 30,
