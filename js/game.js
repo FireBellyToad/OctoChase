@@ -4,6 +4,7 @@ const Game = {
     gameMap: null,
     player: null,
     crab: null,
+    scheduler: new ROT.Scheduler.Simple(),
 
     // Init main fuction
     init: function () {
@@ -25,10 +26,15 @@ const Game = {
     //Game loop
     engine: async function () {
 
+        //Add to scheduler all the entities
+        this.scheduler.add(this.player,true);
+        this.scheduler.add(this.crab,true);
+
         // this is responsible of watching the player move and updating
         // the display accordingly. It is all we need as engine
         while (true) {
-          await this.player.act(); 
+            
+          await this.scheduler.next().act(); 
 
             //Await a valid movement
             // if crab is reached, create new map
