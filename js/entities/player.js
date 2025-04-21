@@ -64,4 +64,8 @@ class Player extends Entity {
             return false;
         }
     }
+    
+    getSpeed() {
+        return 2;
+    }
 }

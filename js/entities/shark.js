@@ -74,4 +74,8 @@ class Shark extends Entity {
     get hasKilledPlayer() {
         return this.#killedPlayer;
     }
+    
+    getSpeed() {
+        return 2;
+    }
 }

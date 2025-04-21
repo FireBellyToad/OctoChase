@@ -40,4 +40,9 @@ class Crab extends Entity {
         this.y = newY;
    
     }
+    
+    // Crab must be slower than player and shark
+    getSpeed() {
+        return 1;
+    }
 }

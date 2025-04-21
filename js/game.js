@@ -6,7 +6,7 @@ const Game = {
     crab: null,
     shark: null,
     actors: [],
-    scheduler: new ROT.Scheduler.Simple(),
+    scheduler: new ROT.Scheduler.Speed(), //Keeps in mind entity speed
 
     // Init main fuction
     init: function () {
@@ -25,9 +25,7 @@ const Game = {
         this.actors.push(this.shark);
 
         this.gameMap.generateMap();
-        this.player.init(this.gameMap);
-        this.crab.init(this.gameMap);
-        this.shark.init(this.gameMap);
+        this.actors.forEach(a => a.init(this.gameMap));
         this.engine(); // start the game engine
         this.render();
     },
@@ -38,36 +36,39 @@ const Game = {
         //Add to scheduler all the entities
         this.actors.forEach(a => this.scheduler.add(a, true));
 
-        // this is responsible of watching the player move and updating
-        // the display accordingly. It is all we need as engine
+        let currentActor
+
+        // Main loop
         while (true) {
 
-            //Await until all the scheduled actors acted
-            for (const a of this.actors) {
-                await this.scheduler.next().act();
-            }
+            //Await until the current actor has acted
+            currentActor = this.scheduler.next();
+            await currentActor.act();
 
-            // if crab is reached, create new map
+            // Collision handling
             if (this.crab.x === this.player.x && this.crab.y === this.player.y) {
                 await this.endGame("🏆 You ate the crab! 🏆", "blue");
             } else if (this.shark.hasKilledPlayer) {
                 await this.endGame("☠️ The shark ate you! ☠️", "red");
             }
 
-            this.render();
+            //Render only if currentActor is player
+            if (currentActor instanceof Player) {
+                this.render();
+            }
+
         }
     },
 
-    // Draw map
+    // Draw map and actors
     render: function () {
         for (let x = 0; x < displayOptions.width; x++) {
             for (let y = 0; y < displayOptions.height; y++) {
                 this.display.draw(x, y, this.gameMap.map[x][y]);
             }
         }
-        this.display.draw(this.player.x, this.player.y, this.player.icon);
-        this.display.draw(this.crab.x, this.crab.y, this.crab.icon);
-        this.display.draw(this.shark.x, this.shark.y, this.shark.icon);
+        
+        this.actors.forEach(a => this.display.draw(a.x, a.y, a.icon));
     },
 
     // when the game is over, we clear hte screen and show a fancy message for three seconds,
@@ -78,10 +79,9 @@ const Game = {
         this.display.draw(14, 10, message, color);
 
         await new Promise((resolve) => setTimeout(resolve, 3000));
-        
+
         this.gameMap.generateMap();
-        this.player.init();
-        this.crab.init();
-        this.shark.init();
+        this.actors.forEach(a => a.init(this.gameMap));
+        this.render();
     }
 }

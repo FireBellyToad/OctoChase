@@ -9,8 +9,16 @@ class Entity {
         this.#icon = icon;
     }
 
-    act() {
+    init(gameMap) {
+        throw new Error("Unimplemented method init");
+    }
+
+    async act() {
         throw new Error("Unimplemented method act");
+    }
+
+    getSpeed() {
+        throw new Error("Unimplemented method getSpeed");
     }
 
     get icon() {
