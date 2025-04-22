@@ -1,17 +1,20 @@
 class Player extends Entity {
 
-    #keyCode = [];
+    #keyCode;
     #gameMapRef;
+    #restartLevel;
 
     constructor(gameMap) {
         super("🐙");
         this.#gameMapRef = gameMap;
         
         //Arrows
+        this.#keyCode = [];
         this.#keyCode[38] = 0; // key-up
         this.#keyCode[39] = 2; // key-right
         this.#keyCode[40] = 4; // key-down
         this.#keyCode[37] = 6; // key-left
+        this.#keyCode[82] = 'r'; // key-left
     }
 
     init() {
@@ -24,6 +27,8 @@ class Player extends Entity {
         const playerStartPos = this.#gameMapRef.freeCells[0];
         this.x = playerStartPos.x;
         this.y = playerStartPos.y;
+
+        this.#restartLevel = false;
     }
 
     async act() {
@@ -52,6 +57,12 @@ class Player extends Entity {
             return false;
         }
 
+        //Restart level 
+        if(String.fromCharCode(code) === "R"){
+            this.#restartLevel = true;
+            return true;
+        }
+
         // ROT.DIRS is needed to map the movement direction within the game map
         // diff is the topological diffs. So we can handle "collisions"
         const diff = ROT.DIRS[8][this.#keyCode[code]];
@@ -68,5 +79,9 @@ class Player extends Entity {
     
     getSpeed() {
         return 2;
+    }
+
+    get restartLevel() {
+        return this.#restartLevel;
     }
 }

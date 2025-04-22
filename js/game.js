@@ -55,12 +55,13 @@ const Game = {
             currentActor = this.scheduler.next();
             await currentActor.act();
 
-
             // Collision handling
             if (this.crab.x === this.player.x && this.crab.y === this.player.y) {
                 await this.endGame("🏆 You ate the crab! 🏆", "white");
             } else if (this.shark.hasKilledPlayer) {
                 await this.endGame("☠️ The shark ate you! ☠️", "red");
+            } else if (this.player.restartLevel) {
+                this.regenerateLevel()
             }
 
             //Render only if currentActor is player
@@ -102,6 +103,10 @@ const Game = {
 
         await new Promise((resolve) => setTimeout(resolve, 3000));
 
+        this.regenerateLevel()
+    },
+
+    regenerateLevel: function () {
         this.gameMap.generateMap();        
         this.actors.forEach(a => a.init(this.gameMap));
         this.render();
