@@ -6,6 +6,12 @@ class Player extends Entity {
     constructor(gameMap) {
         super("🐙");
         this.#gameMapRef = gameMap;
+        
+        //Arrows
+        this.#keyCode[38] = 0; // key-up
+        this.#keyCode[39] = 2; // key-right
+        this.#keyCode[40] = 4; // key-down
+        this.#keyCode[37] = 6; // key-left
     }
 
     init() {
@@ -18,12 +24,6 @@ class Player extends Entity {
         const playerStartPos = this.#gameMapRef.freeCells[0];
         this.x = playerStartPos.x;
         this.y = playerStartPos.y;
-        
-        //Arrows
-        this.#keyCode[38] = 0; // key-up
-        this.#keyCode[39] = 2; // key-right
-        this.#keyCode[40] = 4; // key-down
-        this.#keyCode[37] = 6; // key-left
     }
 
     async act() {
@@ -35,6 +35,7 @@ class Player extends Entity {
             //Slow down the game a little
             await new Promise((resolve) => setTimeout(resolve, 50));
 
+            //Wait for keypress
             let e = await new Promise((resolve) => {
                 window.addEventListener("keydown", resolve, { once: true });
             });
