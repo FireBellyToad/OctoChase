@@ -28,12 +28,12 @@ const Game = {
         this.actors.push(this.shark);
 
         this.gameMap.generateMap();
-        
+
         //Get cell visibility (only free cells can be looked through)
         this.fov = new ROT.FOV.PreciseShadowcasting((x, y) => {
-            return this.gameMap.freeCells.find( f => f.x === x && f.y === y)
+            return this.gameMap.freeCells.find(f => f.x === x && f.y === y)
         })
-        
+
         this.actors.forEach(a => a.init(this.gameMap));
         this.engine(); // start the game engine
         this.render();
@@ -58,16 +58,13 @@ const Game = {
             // Collision handling
             if (this.crab.x === this.player.x && this.crab.y === this.player.y) {
                 await this.endGame("🏆 You ate the crab! 🏆", "white");
-            } else if (this.shark.hasKilledPlayer) {
+            } else if (this.shark.distanceFromPlayer <= 1) {
                 await this.endGame("☠️ The shark ate you! ☠️", "red");
             } else if (this.player.restartLevel) {
                 this.regenerateLevel()
             }
 
-            //Render only if currentActor is player
-            if (currentActor instanceof Player) {
-                this.render();
-            }
+            this.render();
 
         }
     },
@@ -107,7 +104,7 @@ const Game = {
     },
 
     regenerateLevel: function () {
-        this.gameMap.generateMap();        
+        this.gameMap.generateMap();
         this.actors.forEach(a => a.init(this.gameMap));
         this.render();
     }

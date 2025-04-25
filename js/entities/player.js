@@ -14,7 +14,8 @@ class Player extends Entity {
         this.#keyCode[39] = 2; // key-right
         this.#keyCode[40] = 4; // key-down
         this.#keyCode[37] = 6; // key-left
-        this.#keyCode[82] = 'r'; // key-left
+        this.#keyCode[82] = 'r'; // R key
+        this.#keyCode[87] = 'w'; // W key
     }
 
     init() {
@@ -60,6 +61,11 @@ class Player extends Entity {
         //Restart level 
         if(String.fromCharCode(code) === "R"){
             this.#restartLevel = true;
+            return true;
+        }
+
+        //Wait doing nothing 
+        if(String.fromCharCode(code) === "W"){
             return true;
         }
 
